@@ -13,7 +13,9 @@ export function InboxDropdown({
   onTriggerHover,
   inboxLoading,
   inboxData,
+  unreadCount = 0,
   onItemClick,
+  onMarkAllRead,
 }) {
   return (
     <DropdownMenu open={isOpen} onOpenChange={onOpenChange}>
@@ -22,15 +24,33 @@ export function InboxDropdown({
           variant="ghost"
           size="icon"
           type="button"
-          aria-label="Inbox notifications"
+          aria-label={unreadCount > 0 ? `Inbox notifications, ${unreadCount} unread` : "Inbox notifications"}
           onMouseEnter={onTriggerHover}
+          className="relative"
         >
           <Bell className="size-5" />
+          {unreadCount > 0 && (
+            <span className="absolute -right-0.5 -top-0.5 flex min-h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold leading-none text-white">
+              {unreadCount > 9 ? "9+" : unreadCount}
+            </span>
+          )}
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-80 max-w-[90vw]">
-        <div className="px-2 py-1 border-b">
+        <div className="flex items-center justify-between border-b px-2 py-1">
           <h3 className="text-xs font-semibold uppercase tracking-wide">Inbox</h3>
+          {unreadCount > 0 && (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                onMarkAllRead?.();
+              }}
+              className="text-[11px] font-medium text-[#F97316] hover:underline"
+            >
+              Tandai semua dibaca
+            </button>
+          )}
         </div>
         {inboxLoading ? (
           <div className="px-2 py-2 text-xs text-muted-foreground text-center">

@@ -4,10 +4,12 @@ import com.example.skripsi.entities.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserNotificationRepository extends JpaRepository<UserNotification, Long> {
     Page<UserNotification> findByUserIdOrderByCreatedAtDesc(Long userId, Pageable pageable);
@@ -18,4 +20,13 @@ public interface UserNotificationRepository extends JpaRepository<UserNotificati
 
     @Query("SELECT un FROM UserNotification un WHERE un.userId = :userId AND (:cursor IS NULL OR un.userNotificationId < :cursor) ORDER BY un.userNotificationId DESC")
     List<UserNotification> findPageByUserIdDesc(@Param("userId") Long userId, @Param("cursor") Long cursor, Pageable pageable);
+
+    // Ownership-scoped fetch so a user can only touch their own notification.
+    Optional<UserNotification> findByUserNotificationIdAndUserId(Long userNotificationId, Long userId);
+
+    long countByUserIdAndIsReadFalse(Long userId);
+
+    @Modifying
+    @Query("UPDATE UserNotification un SET un.isRead = true WHERE un.userId = :userId AND un.isRead = false")
+    int markAllReadForUser(@Param("userId") Long userId);
 }

@@ -5,6 +5,8 @@ import com.example.skripsi.models.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/inbox")
 public class InboxController {
@@ -26,6 +28,37 @@ public class InboxController {
                 .message("Inbox fetched")
                 .meta(results.getMeta())
                 .result(results.getResult())
+                .build();
+    }
+
+    @GetMapping("/unread-count")
+    @PreAuthorize("isAuthenticated()")
+    public WebResponse<?> getUnreadCount() {
+        return WebResponse.builder()
+                .success(true)
+                .message("Unread count fetched")
+                .result(Map.of("count", inboxService.getUnreadCount()))
+                .build();
+    }
+
+    @PatchMapping("/{inboxId}/read")
+    @PreAuthorize("isAuthenticated()")
+    public WebResponse<?> markRead(@PathVariable Long inboxId) {
+        inboxService.markRead(inboxId);
+        return WebResponse.builder()
+                .success(true)
+                .message("Notification marked as read")
+                .build();
+    }
+
+    @PatchMapping("/read-all")
+    @PreAuthorize("isAuthenticated()")
+    public WebResponse<?> markAllRead() {
+        int updated = inboxService.markAllRead();
+        return WebResponse.builder()
+                .success(true)
+                .message("All notifications marked as read")
+                .result(Map.of("updated", updated))
                 .build();
     }
 }

@@ -17,13 +17,8 @@ export const getSubCategorySummary = async (subCategoryName) => {
   return response.data;
 };
 
-export const getSubCategoryMasterData = async ({ search = "", cursor = null, limit = 15 } = {}) => {
-  const params = { limit };
-  if (search) params.search = search;
-  if (cursor !== null) params.cursor = cursor;
-  const response = await axiosInstance.get("/admin/subcategory", { params });
-  return response.data;
-};
+// NOTE: a dead getSubCategoryMasterData() calling GET /admin/subcategory was
+// removed -- the backend never exposed that route and nothing used the function.
 
 export const createCategory = async (payload) => {
   const response = await axiosInstance.post("/category", payload);

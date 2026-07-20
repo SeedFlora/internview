@@ -1,6 +1,7 @@
 package com.example.skripsi.services;
 
 import com.example.skripsi.entities.*;
+import com.example.skripsi.exceptions.*;
 import com.example.skripsi.interfaces.*;
 import com.example.skripsi.models.*;
 import com.example.skripsi.models.inbox.*;
@@ -65,6 +66,32 @@ public class InboxService implements IInboxService {
                         .hasMore(hasMore)
                         .build())
                 .build();
+    }
+
+    @Override
+    public long getUnreadCount() {
+        Long userId = securityUtils.getCurrentUserId();
+        return userNotificationRepository.countByUserIdAndIsReadFalse(userId);
+    }
+
+    @Override
+    public void markRead(Long inboxId) {
+        Long userId = securityUtils.getCurrentUserId();
+        // Ownership-scoped: a user can only mark their own notification read.
+        UserNotification notification = userNotificationRepository
+                .findByUserNotificationIdAndUserId(inboxId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Notification not found"));
+
+        if (!notification.isRead()) {
+            notification.setRead(true);
+            userNotificationRepository.save(notification);
+        }
+    }
+
+    @Override
+    public int markAllRead() {
+        Long userId = securityUtils.getCurrentUserId();
+        return userNotificationRepository.markAllReadForUser(userId);
     }
 
     private InboxPreviewResponse toPreviewResponse(UserNotification un) {

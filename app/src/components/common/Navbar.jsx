@@ -21,8 +21,11 @@ export function Navbar() {
     inboxData,
     inboxLoading,
     isInboxOpen,
+    unreadCount,
     handleOpenChange,
     fetchInbox,
+    markRead,
+    markAllRead,
   } = useInboxNotifications();
 
   // Exclude paths for /register and /login
@@ -40,6 +43,10 @@ export function Navbar() {
   };
 
   const handleInboxItemClick = (item) => {
+    // Mark the notification read when the user opens it.
+    if (!item.read) {
+      markRead(item.inboxId);
+    }
     handleOpenChange(false);
     navigate(`/inbox/${item.referenceId}?type=${item.type}`);
   };
@@ -86,7 +93,9 @@ export function Navbar() {
                 onTriggerHover={fetchInbox}
                 inboxLoading={inboxLoading}
                 inboxData={inboxData}
+                unreadCount={unreadCount}
                 onItemClick={handleInboxItemClick}
+                onMarkAllRead={markAllRead}
               />
 
               {/* Authenticated User Avatar with Dropdown */}

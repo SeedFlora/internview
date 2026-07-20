@@ -5,7 +5,17 @@ export const getInbox = async () => {
   return response.data;
 };
 
-// NOTE: markAsRead (PATCH /inbox/{id}/read) and deleteInbox (DELETE /inbox/{id})
-// were removed -- the backend never implemented those routes, so they only
-// returned 404. The inbox is currently read-only (GET /inbox). If an
-// unread/delete feature is wanted, add the endpoints server-side first.
+export const getUnreadCount = async () => {
+  const response = await axiosInstance.get("/inbox/unread-count");
+  return response.data;
+};
+
+export const markInboxRead = async (inboxId) => {
+  const response = await axiosInstance.patch(`/inbox/${inboxId}/read`);
+  return response.data;
+};
+
+export const markAllInboxRead = async () => {
+  const response = await axiosInstance.patch("/inbox/read-all");
+  return response.data;
+};
