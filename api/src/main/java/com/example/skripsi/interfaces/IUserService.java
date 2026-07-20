@@ -14,6 +14,7 @@ public interface IUserService {
     List<UserResponse> getAllUserByUserPrivilege();
     Boolean emailExists(String email);
     UserResponse getUserProfile();
+    UserResponse updateProfile(UpdateProfileRequest request);
     String resolveUserName(Long userId);
     Map<Long, String> getUserNameMap(List<Long> userIds);
     Boolean userExists(Long userId);

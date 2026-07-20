@@ -1,3 +1,4 @@
+import { Pencil } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 
 function InfoItem({ label, value }) {
@@ -9,13 +10,25 @@ function InfoItem({ label, value }) {
   );
 }
 
-export function PersonalInformationCard({ user }) {
+export function PersonalInformationCard({ user, onEdit }) {
   return (
     <Card className="rounded-2xl border-slate-200 py-0 shadow-sm lg:col-span-2">
       <CardHeader className="px-5 py-4 sm:px-6 sm:py-5">
-        <div>
-          <h2 className="font-plus-jakarta text-xl font-semibold text-slate-900">Personal Information</h2>
-          <p className="font-inter mt-1 text-sm text-slate-500">Your basic contact details</p>
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h2 className="font-plus-jakarta text-xl font-semibold text-slate-900">Personal Information</h2>
+            <p className="font-inter mt-1 text-sm text-slate-500">Your basic contact details</p>
+          </div>
+          {onEdit && (
+            <button
+              type="button"
+              onClick={onEdit}
+              className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-900"
+            >
+              <Pencil className="size-3.5" />
+              Edit
+            </button>
+          )}
         </div>
       </CardHeader>
       <CardContent className="px-5 py-5 sm:px-6 sm:py-6">

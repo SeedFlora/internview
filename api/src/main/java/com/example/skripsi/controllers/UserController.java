@@ -5,6 +5,7 @@ import com.example.skripsi.interfaces.IReviewService;
 import com.example.skripsi.models.*;
 import com.example.skripsi.models.user.*;
 import com.example.skripsi.services.*;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -75,6 +76,17 @@ public class UserController {
                 .success(true)
                 .message("Successfully get profile")
                 .result(userProfile)
+                .build();
+    }
+
+    @PatchMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public WebResponse<?> updateProfile(@Valid @RequestBody UpdateProfileRequest request) {
+        var updated = userService.updateProfile(request);
+        return WebResponse.builder()
+                .success(true)
+                .message("Profile updated")
+                .result(updated)
                 .build();
     }
 

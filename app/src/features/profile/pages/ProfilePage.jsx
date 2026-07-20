@@ -7,6 +7,7 @@ import { getRecentReviews } from "@/api/reviewApi";
 import { unsaveCompany } from "@/api/companyApi";
 import { toast } from "sonner";
 import { CertificateSubmit } from "@/features/profile/components/CertificateSubmit";
+import { EditProfileModal } from "@/features/profile/components/EditProfileModal";
 import { PersonalInformationCard } from "../components/PersonalInformationCard";
 import { AcademicDetailsCard } from "../components/AcademicDetailsCard";
 import { CampusLocationCard } from "../components/CampusLocationCard";
@@ -119,9 +120,10 @@ const getCompanySlug = (company) =>
 
 export function ProfilePage() {
   // Get user info and loading state from UserContext
-  const { user, loading } = useContext(UserContext);
+  const { user, loading, loadUser } = useContext(UserContext);
   const navigate = useNavigate();
-  
+
+  const [isEditOpen, setIsEditOpen] = useState(false);
   const [recentReviews, setRecentReviews] = useState([]);
   const [savedCompanies, setSavedCompanies] = useState([]);
   const [certificates, setCertificates] = useState([]);
@@ -286,10 +288,17 @@ export function ProfilePage() {
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
       <CertificateSubmit user={user} onCertificateSubmitted={fetchCertificates} />
 
+      <EditProfileModal
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        user={user}
+        onSaved={() => loadUser?.(true)}
+      />
+
       {/* ===== PROFILE INFORMATION CARDS ===== */}
       <div>
         <div className="grid gap-5 lg:grid-cols-3">
-          <PersonalInformationCard user={user} />
+          <PersonalInformationCard user={user} onEdit={() => setIsEditOpen(true)} />
           <AcademicDetailsCard user={user} />
           <CampusLocationCard user={user} />
           <CertificateCard certificates={certificates} loading={certificatesLoading} />

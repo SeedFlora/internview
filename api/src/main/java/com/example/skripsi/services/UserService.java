@@ -145,6 +145,31 @@ public class UserService implements IUserService {
         return toUserResponse(userProfile);
     }
 
+    @Override
+    public UserResponse updateProfile(UpdateProfileRequest request) {
+        Long userId = securityUtils.getCurrentUserId();
+        log.info("[updateProfile] userId={}", userId);
+
+        UserProfile userProfile = userProfileRepository.findByUserUserId(userId)
+                .orElseThrow(() -> {
+                    log.warn("[updateProfile] profile not found userId={}", userId);
+                    return new InvalidCredentialsException("User profile not found");
+                });
+
+        User user = userProfile.getUser();
+        user.setFirstName(request.getFirstName().trim());
+        user.setLastName(request.getLastName() == null ? null : request.getLastName().trim());
+        user.setUpdatedAt(OffsetDateTime.now());
+        userRepository.save(user);
+
+        userProfile.setPhoneNumber(request.getPhoneNumber().trim());
+        userProfile.setUpdatedAt(OffsetDateTime.now());
+        userProfileRepository.save(userProfile);
+
+        log.info("[updateProfile] success userId={}", userId);
+        return toUserResponse(userProfile);
+    }
+
     public CertificateResponse submitCertificateRequest(CreateCertificateRequest request) {
         Long userId = securityUtils.getCurrentUserId();
         log.info("[submitCertificateRequest] userId={} certificateName={}", userId, request.getCertificateName());

@@ -1,8 +1,11 @@
 import { axiosInstance } from "./axiosInstance";
 
-// NOTE: a previous updateProfile() calling PUT /auth/profile was removed -- the
-// backend never exposed that route, so it only 404'd. Add the endpoint
-// server-side before wiring a profile-edit form.
+export const updateProfile = async (payload) => {
+  // PATCH /user/me — updates editable personal info (firstName, lastName,
+  // phoneNumber). Email and academic data are not editable here.
+  const response = await axiosInstance.patch("/user/me", payload);
+  return response.data;
+};
 
 export const getMe = async () => {
   const response = await axiosInstance.get("/user/me");
