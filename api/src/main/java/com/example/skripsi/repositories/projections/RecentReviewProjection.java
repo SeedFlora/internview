@@ -1,0 +1,16 @@
+package com.example.skripsi.repositories.projections;
+
+import java.time.Instant;
+
+public interface RecentReviewProjection {
+    Long getInternshipHeaderId();
+    String getTestimony();
+    String getCreatedByName();
+    Double getAverageRating();
+    String getCompanyName();
+    String getCompanyCategory();
+    String getCompanySubCategory();
+    String getCompanyWebsite();
+    String getJobTitle();
+    Instant getCreatedAt();
+}
